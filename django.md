@@ -17,9 +17,9 @@ Create a new project
 ```
 django-admin startproject myproject
 
-# mysite/
+# myproject/
 #    manage.py
-#    mysite/
+#    myproject/
 #        __init__.py
 #        settings.py
 #        urls.py
@@ -47,3 +47,42 @@ python manage.py startapp myapp
 ```
 
 ## Views
+Basic view
+```
+from django.http import HttpResponse
+
+def index(request):
+    return HttpResponse("Hello world.")
+```
+
+## Urls
+Basic template
+```
+# myproject/urls.py
+from django.contrib import admin
+from django.urls import include, path
+
+urlpatterns = [
+    path('myapp/', include('myapp.urls')),
+    path('admin/', admin.site.urls),
+]
+
+# myapp/urls.py
+from django.urls import path
+from . import views
+
+urlpatterns = [
+    path('', views.index, name='index'),
+    # resolves to /myapp/
+]
+```
+- Always use **include()**, only exception is **admin.site.urls**
+
+
+path(route, view, kwargs, name)
+- **route**: e.g. `"index/"`, `"article/<int:articleid>"`, `"bio/<username>"`
+- **view**: either a specific view or include()
+- **kwargs**: additional arguments for the view
+- **name**: identifier that is used by **reverse()**
+- *also exists re_path(): using regex*
+
