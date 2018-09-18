@@ -2,20 +2,20 @@
 
 ## Installation
 Create virtual environment with Python3 and activate
-```
-virtualenv -p `which python3` ~/.virtualenvs/djangodev
-source ~/.virtualenvs/djangodev/bin/activate
+```bash
+$ virtualenv -p `which python3` ~/.virtualenvs/djangodev
+$ source ~/.virtualenvs/djangodev/bin/activate
 ```
 
 Install Django: 
-```
-pip install Django
+```bash
+$ pip install Django
 ```
 
 ## Setup
 Create a new project
-```
-django-admin startproject myproject
+```bash
+$ django-admin startproject myproject
 
 # myproject/
 #    manage.py
@@ -27,13 +27,13 @@ django-admin startproject myproject
 ```
 
 Run development server
-```
-python manage.py runserver [port]
+```bash
+$ python manage.py runserver [port]
 ```
 
 Create a new app
-```
-python manage.py startapp myapp
+```bash
+$ python manage.py startapp myapp
 
 # myapp/
 #    __init__.py
@@ -63,7 +63,7 @@ DATABASES.default:
 
 ## Models
 Basic model
-```
+```python
 from django.db import models
 
 class MyModel(models.Model):
@@ -72,8 +72,8 @@ class MyModel(models.Model):
 ```
 
 Prepare migrations for changes in myapp, don't change DB yet
-```
-python manage.py makemigrations myapp
+```bash
+$ python manage.py makemigrations myapp
 
 # Migrations for 'myapp':
 #   myapp/migrations/0001_initial.py
@@ -81,13 +81,13 @@ python manage.py makemigrations myapp
 ```
 
 View sql of a migration
-```
-python manage.py sqlmigrate myapp 0001
+```bash
+$ python manage.py sqlmigrate myapp 0001
 ```
 
 Migrate a migration
-```
-python manage.py migrate
+```bash
+$ python manage.py migrate
 
 # Operations to perform:
 #   Apply all migrations: admin, auth, contenttypes, myapp, sessions
@@ -108,7 +108,7 @@ $ python manage.py shell
 
 ## Views
 Basic view
-```
+```python
 from django.http import HttpResponse
 
 def index(request):
@@ -117,7 +117,7 @@ def index(request):
 
 ## Urls
 Basic template
-```
+```python
 # myproject/urls.py
 from django.contrib import admin
 from django.urls import include, path
