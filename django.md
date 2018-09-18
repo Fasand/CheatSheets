@@ -46,6 +46,66 @@ python manage.py startapp myapp
 #    views.py
 ```
 
+Migrate (create or update) databases, e.g. initial db creation
+```
+python manage.py migrate
+```
+
+## Settings
+INSTALLED_APPS: any apps used by the project, including the ones you create
+- e.g. `django.contrib.{admin|auth|sessions|...}`
+- to include your app, reference its configuration class
+    - e.g. `myapp.apps.MyappConfig`
+
+DATABASES.default:
+- ENGINE: `django.db.backends.{sqlite3|mysql|postgresql|...}`
+- NAME: absolute path for sqlite3, database name for others
+
+## Models
+Basic model
+```
+from django.db import models
+
+class MyModel(models.Model):
+    name = models.CharField(max_length=50)
+    pub_date = models.DateTimeField('date published')
+```
+
+Prepare migrations for changes in myapp, don't change DB yet
+```
+python manage.py makemigrations myapp
+
+# Migrations for 'myapp':
+#   myapp/migrations/0001_initial.py
+#     - Create model MyModel
+```
+
+View sql of a migration
+```
+python manage.py sqlmigrate myapp 0001
+```
+
+Migrate a migration
+```
+python manage.py migrate
+
+# Operations to perform:
+#   Apply all migrations: admin, auth, contenttypes, myapp, sessions
+# Running migrations:
+#   Applying myapp.0001_initial... OK
+```
+
+Play around with your models
+```python
+$ python manage.py shell
+>>> from myapp.models import MyModel
+>>> from django.utils import timezone
+>>> m = MyModel(name="Fancy name", pub_date=timezone.now())
+>>> m.save()
+```
+
+### Fields (TODO)
+
 ## Views
 Basic view
 ```
