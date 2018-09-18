@@ -1,4 +1,5 @@
 # Django (2.1)
+Heavily inspired by https://docs.djangoproject.com/en/2.1/intro/
 
 ## Installation
 Create virtual environment with Python3 and activate
