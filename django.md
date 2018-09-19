@@ -1,9 +1,8 @@
-# Django (2.1)
-![Django Logo](https://www.djangoproject.com/s/img/logos/django-logo-positive.svg)
+![Django](https://www.djangoproject.com/s/img/logos/django-logo-positive.svg)
 
 Heavily inspired by https://docs.djangoproject.com/en/2.1/intro/
 
-## Table of contents
+# Table of contents
 - [Installation](#installation)
 - [Setup](#setup)
 - [Settings](#settings)
