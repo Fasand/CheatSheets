@@ -1,5 +1,16 @@
 # Django (2.1)
+![Django Logo](https://www.djangoproject.com/s/img/logos/django-logo-positive.svg)
+
 Heavily inspired by https://docs.djangoproject.com/en/2.1/intro/
+
+## Table of contents
+- [Installation](#installation)
+- [Setup](#setup)
+- [Settings](#settings)
+- [Models](#models)
+- [Admin](#admin)
+- [Views](#views)
+- [Urls](#urls)
 
 ## Installation
 Create virtual environment with Python3 and activate
@@ -115,8 +126,10 @@ $ python manage.py migrate
 ```
 
 Play around with your models
-```python
+```bash
 $ python manage.py shell
+```
+```python
 >>> from myapp.models import MyModel
 >>> from django.utils import timezone
 >>> m = MyModel(name="Fancy name", pub_date=timezone.now())
