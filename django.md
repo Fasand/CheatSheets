@@ -73,6 +73,8 @@ INSTALLED_APPS: any apps used by the project, including the ones you create
 - to include your app, reference its configuration class
     - e.g. `myapp.apps.MyappConfig`
 
+ROOT_URLCONF: pointer to main urlconf, first point of contact for dealing with url requests
+
 DATABASES.default:
 - ENGINE: `django.db.backends.{sqlite3|mysql|postgresql|...}`
 - NAME: absolute path for sqlite3, database name for others
@@ -141,6 +143,7 @@ True
 
 ### Database API (TODO)
 e.g. MyModel.objects.all()
+- MyModel.objects.get(pk=...) (use primary key)
 
 ## Admin
 Register a model in administration
@@ -162,6 +165,97 @@ def detail(request, article_id):
     return HttpResponse("Article details for: {}".format(article_id))
 ```
 
+Using a template
+```python
+# The hard way
+from django.http import HttpResponse
+from django.template import loader
+
+def index(request):
+    template = loader.get_template('myapp/index.html')
+    context = { 'message': 'Hello world' }
+    return HttpResponse(template.render(context, request))
+
+# The easy way
+from django.shortcuts import render
+
+def index(request):
+    context = { 'message': 'Hello world' }
+    return render(request, 'myapp/index.html', context)
+```
+
+Raising a 404
+```python
+# The hard way
+from django.http import Http404
+from django.shortcuts import render
+from .models import MyModel
+
+def detail(request, article_id):
+    try:
+        article = MyModel.objects.get(pk=question_id)
+    except MyModel.DoesNotExist:
+        raise Http404("Article does not exist")
+    return render(request, 'myapp/detail.html', {'article': article})
+
+# The easy way
+from django.shortcuts import render, get_object_or_404
+
+def detail(request, article_id):
+    article = get_object_or_404(MyModel, pk=question_id)
+    return render(request, 'myapp/detail.html', {'article': article})
+```
+- `get_list_or_404()` works the same but for database `filter()` instead of `get()`
+
+Access POST data
+```python
+# request.POST is a dictionary-like object
+request.POST['choice']
+```
+- `request.GET` also exists
+
+Redirect to another URL
+```python
+from django.http import HttpResponseRedirect
+from django.urls import reverse
+
+def index(request):
+    return HttpResponseRedirect(reverse('myapp:detail', args=(1,)))
+```
+- always return a redirect when dealing with POST forms
+- `reverse()` takes the name of a view and a tuple of arguments
+
+### Templates
+- Store in `myapp/templates/myapp/template.html`
+    - Adjustable in settings/TEMPLATES
+    - Requires APP_DIRS to be True, which it is by default
+
+Sample template
+```django
+{% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+
+<form action="{% url 'myapp:vote' article.id %}" method="post">
+{% csrf_token %}
+{% for choice in article.choice_set.all %}
+    <input type="radio" name="choice" id="choice{{ forloop.counter }}" value="{{ choice.id }}">
+    <label for="choice{{ forloop.counter }}">{{ choice.choice_text }}</label><br>
+{% endfor %}
+<input type="submit" value="Vote">
+</form>
+```
+- `{{ forloop.counter }}` prints the current for loop iteration
+- `{% csrf_token %}` should always be used in a POST form
+
+Dynamic URLs
+```django
+Use the urlconf of the app containing the template
+{% url 'index' %}
+{% url 'detail' article.id %}
+
+Use a namespace defined in the app's "myapp/urls.py"
+{% url 'myapp:detail' article.id %}
+```
+
 ## Urls
 Basic template
 ```python
@@ -178,9 +272,11 @@ urlpatterns = [
 from django.urls import path
 from . import views
 
+# Declare the app's namespace for url reverse
+app_name = 'myapp'
+
 urlpatterns = [
     path('detail/<int:article_id>', views.detail, name='detail'),
-    # resolves to /myapp/
 ]
 ```
 - Always use **include()**, only exception is **admin.site.urls**
