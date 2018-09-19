@@ -157,8 +157,9 @@ Basic view
 ```python
 from django.http import HttpResponse
 
-def index(request):
-    return HttpResponse("Hello world.")
+# args come from path route, e.g. "/detail/<article_id>"
+def detail(request, article_id):
+    return HttpResponse("Article details for: {}".format(article_id))
 ```
 
 ## Urls
@@ -178,7 +179,7 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path('', views.index, name='index'),
+    path('detail/<int:article_id>', views.detail, name='detail'),
     # resolves to /myapp/
 ]
 ```
@@ -186,7 +187,7 @@ urlpatterns = [
 
 
 path(route, view, kwargs, name)
-- **route**: e.g. `"index/"`, `"article/<int:articleid>"`, `"bio/<username>"`
+- **route**: e.g. `"index/"`, `"article/<int:article_id>"`, `"bio/<username>"`
 - **view**: either a specific view or include()
 - **kwargs**: additional arguments for the view
 - **name**: identifier that is used by **reverse()**
