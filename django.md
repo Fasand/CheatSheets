@@ -256,6 +256,69 @@ Use a namespace defined in the app's "myapp/urls.py"
 {% url 'myapp:detail' article.id %}
 ```
 
+### Generic views
+TemplateView
+```python
+from django.views import generic
+
+class HomePageView(generic.base.TemplateView):
+    template_name = "myapp/home.html"
+
+    def get_context_data(self, **kwargs):
+        # get original context before modifying it
+        # contains parameters captured in the URL
+        context = super().get_context_data(**kwargs)
+        # add your own stuff and render template_name
+        context['fascinating_fact'] = "Dead people can get goose bumps."
+        return context
+```
+
+ListView
+```python
+from django.views import generic
+
+class IndexView(generic.ListView):
+    # not necessary if overriding get_queryset()
+    model = MyModel
+    # default is <app name>/<model name>_list.html
+    template_name = "myapp/index.html"
+    # rename the template variable, default is mymodel_list
+    context_object_name = 'latest_articles_list'
+
+    # return a filtered queryset instead of the whole thing
+    def get_queryset(self):
+        return MyModel.objects.order_by('-pub_date')[:5]
+
+# myapp/urls.py 
+path('', views.IndexView.as_view(), name='index')
+```
+
+DetailView
+```python
+from django.views import generic
+
+class DetailView(generic.DetailView):
+    # necessary this time
+    model = Question
+    # default is <app name>/<model name>_detail.html
+    template_name = 'myapp/detail.html'
+
+    # add your own data to template context
+    def get_context_data(self, **kwargs):
+        # Call the base implementation first to get a context
+        context = super().get_context_data(**kwargs)
+        # Add in a QuerySet of all the books
+        context['message'] = "Whoa, this is a message."
+        return context
+
+# myapp/urls.py
+# 'pk' will be used as the filter for the database
+path('detail/<int:pk>', views.DetailView.as_view(), name='detail')
+```
+
+also Redirect, Form, Create, Update, Delete, ... views
+- [Django 2.1 built-in generic views](https://docs.djangoproject.com/en/2.1/ref/class-based-views/)
+
 ## Urls
 Basic template
 ```python
